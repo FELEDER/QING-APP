@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>晴 · 永远倾听</title>
+  <!-- 这一行是重点：让手机按屏幕宽度来排版 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="title">
+        <div class="logo-dot"></div>
+        <div>
+          <h1>晴</h1>
+          <p>永远倾听 · 永远理解 · 永远陪伴</p>
+        </div>
+      </div>
+      <div class="user-info">
+        <span id="greeting">晚上好</span>
+        <span id="username-display"></span>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <!-- 左：聊天区 -->
+      <section class="chat-section">
+        <div class="chat-window" id="chat-window">
+          <!-- 消息会通过 JS 动态加进来 -->
+        </div>
+        <div class="chat-input-area">
+          <textarea id="user-input" rows="2" placeholder="说点什么……"></textarea>
+          <button id="send-btn">发送</button>
+        </div>
+        <div class="system-hint">
+          小提示：输入 “帮我记 + 内容”，晴会把这句话收藏在右边。
+        </div>
+      </section>
+
+      <!-- 右：晴的记忆 / 状态 -->
+      <aside class="side-panel">
+        <div class="panel-block">
+          <h2>晴记得的东西</h2>
+          <ul id="memory-list" class="memory-list"></ul>
+        </div>
+
+        <div class="panel-block">
+          <h2>今日状态</h2>
+          <p id="session-info"></p>
+          <p id="silence-info"></p>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
