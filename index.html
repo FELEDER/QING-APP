@@ -1,95 +1,73 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-<title>晴 · 永远倾听 · v8</title>
-  <!-- 这一行是重点：让手机按屏幕宽度来排版 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-  <div class="app">
-<header class="app-header">
-  <div class="header-main">
-    <div class="app-title">晴 · 永远倾听</div>
-    <div class="app-subtitle">
-      <span id="greeting"></span>，<span id="username-display"></span>
-    </div>
-
-  <!-- 你原来的 header-meta 那块保持不动 -->
-  <div class="header-meta">
-    <div id="session-info"></div>
-    <div id="silence-info"></div>
-
-    <!-- 新增：背景风格切换按钮 -->
-    <button id="theme-toggle" class="theme-toggle-btn">深色</button>
-  </div>
-</header>
-
-
-    <!-- 新增：场景模式切换 -->
-    <div class="mode-switch">
-      <button class="mode-btn" data-mode="daily">日常</button>
-      <button class="mode-btn" data-mode="interview">面试那天</button>
-      <button class="mode-btn" data-mode="lake">湖边夜晚</button>
-    </div>
-  </div>
-
-    <main class="app-main">
-      <!-- 左：聊天区 -->
-<section class="chat-section">
-  <div class="chat-window" id="chat-window">
-    <!-- 虚化人影 -->
-    <div class="qing-silhouette" id="qing-silhouette"></div>
-
-    <!-- 消息会通过 JS 动态加进来 -->
-  </div>
-
-  <div class="typing-indicator" id="typing-indicator">
-    晴 正在回应……
-  </div>
-  ...
-</section>
-
-
-  <div class="chat-input-area">
-    <textarea id="user-input" rows="2" placeholder="说点什么……"></textarea>
-    <button id="send-btn">发送</button>
-  </div>
-  <div class="system-hint">
-    小提示：输入 “帮我记 + 内容”，晴会把这句话收藏在右边。
-  </div>
-</section>
-
-
-      <!-- 右：晴的记忆 / 状态 -->
-      <aside class="side-panel">
-        <div class="panel-block">
-          <h2>晴记得的东西</h2>
-          <ul id="memory-list" class="memory-list"></ul>
+  <head>
+    <meta charset="UTF-8" />
+    <title>晴 · 永远倾听</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app theme-deep">
+      <header class="app-header">
+        <div class="header-main">
+          <div class="app-title">晴 · 永远倾听</div>
+          <div class="app-subtitle">
+            <span id="greeting"></span>，<span id="username-display"></span>
+          </div>
         </div>
 
-        <div class="panel-block">
-          <h2>今日状态</h2>
-          <p id="session-info"></p>
-          <p id="silence-info"></p>
+        <div class="header-meta">
+          <div id="session-info"></div>
+          <div id="silence-info"></div>
+          <button id="theme-toggle" class="theme-toggle-btn">深色</button>
         </div>
-      </aside>
-    </main>
-  </div>
-  <!-- 呼吸练习遮罩层 -->
-  <div class="breathing-overlay" id="breathing-overlay">
-    <div class="breathing-panel">
-      <div class="breathing-circle"></div>
-      <div class="breathing-text">
-        <p id="breathing-phase">吸气…… 数到四</p>
-        <p class="breathing-sub">跟着圆一起，慢慢来，就两三轮就好。</p>
+      </header>
+
+      <main class="app-main">
+        <!-- 聊天区 -->
+        <section class="chat-section">
+          <div class="chat-window" id="chat-window">
+            <!-- 虚化人影 -->
+            <div id="qing-silhouette" class="qing-silhouette"></div>
+          </div>
+
+          <div class="typing-indicator" id="typing-indicator">
+            晴 正在回应……
+          </div>
+          <div class="system-hint">
+            你可以说“帮我记 + 一句话”，我会替你记下来。
+          </div>
+
+          <div class="chat-input-area">
+            <textarea
+              id="user-input"
+              placeholder="想说什么就说什么……按 Enter 发送，Shift+Enter 换行"
+            ></textarea>
+            <button id="send-btn">发送</button>
+          </div>
+        </section>
+
+        <!-- 记忆区 -->
+        <aside class="memory-section">
+          <h2>QING MEMORY</h2>
+          <p>这些是你让晴记住的片段，它们只保存在你的设备里。</p>
+          <ul id="memory-list"></ul>
+        </aside>
+      </main>
+    </div>
+
+    <!-- 呼吸练习遮罩层 -->
+    <div class="breathing-overlay" id="breathing-overlay">
+      <div class="breathing-panel">
+        <div class="breathing-circle"></></div>
+        <div class="breathing-text">
+          <p id="breathing-phase">吸气…… 在心里慢慢数到四。</p>
+          <p class="breathing-sub">如果你不想继续，随时可以关掉。</p>
+        </div>
+        <button id="breathing-close-btn">先停一下</button>
       </div>
-      <button id="breathing-close-btn">我想先停一下</button>
     </div>
-  </div>
 
-  <script src="app.js"></script>
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>

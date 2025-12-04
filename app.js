@@ -9,15 +9,6 @@ const greetingSpan = document.getElementById("greeting");
 const usernameDisplay = document.getElementById("username-display");
 const typingIndicator = document.getElementById("typing-indicator");
 
-// 根节点 & 背景按钮
-const appRoot = document.querySelector(".app");
-const themeToggleBtn = document.getElementById("theme-toggle");
-
-// 新增：场景模式相关元素
-const appRoot = document.querySelector(".app");
-const modeButtons = document.querySelectorAll(".mode-btn");
-
-
 // 呼吸练习相关
 const breathingOverlay = document.getElementById("breathing-overlay");
 const breathingPhaseText = document.getElementById("breathing-phase");
@@ -25,6 +16,10 @@ const breathingCloseBtn = document.getElementById("breathing-close-btn");
 
 // 虚化人影
 const qingSilhouette = document.getElementById("qing-silhouette");
+
+// 根节点 & 背景按钮
+const appRoot = document.querySelector(".app");
+const themeToggleBtn = document.getElementById("theme-toggle");
 
 // === 全局状态 ===
 let username = "";
@@ -37,14 +32,35 @@ let breathingTimerId = null;
 let breathingPhaseIndex = 0;
 
 let chatMessages = []; // 会传给后端（百炼）作为对话历史
-let currentMode = "daily"; // 当前场景模式
-let currentTheme = "deep"; // 当前背景主题：deep / soft / light
+let currentTheme = "deep"; // deep / soft / light
 
+// === 背景主题 ===
+function applyTheme(theme) {
+  currentTheme = theme;
+
+  if (appRoot) {
+    appRoot.classList.remove("theme-deep", "theme-soft", "theme-light");
+    appRoot.classList.add(`theme-${theme}`);
+  }
+
+  if (themeToggleBtn) {
+    if (theme === "deep") {
+      themeToggleBtn.textContent = "深色";
+    } else if (theme === "soft") {
+      themeToggleBtn.textContent = "柔和";
+    } else {
+      themeToggleBtn.textContent = "浅色";
+    }
+  }
+
+  localStorage.setItem("qing_theme", theme);
+}
 
 // === 初始化 ===
 function initState() {
   const storedName = localStorage.getItem("qing_username");
   const storedMemories = localStorage.getItem("qing_memories");
+  const storedTheme = localStorage.getItem("qing_theme");
 
   if (storedName) {
     username = storedName;
@@ -67,20 +83,17 @@ function initState() {
   updateSessionInfo();
   updateSilenceInfo();
 
-
+  // 应用上次主题
+  applyTheme(storedTheme || "deep");
 
   // 晴的第一句
   addQingMessage(
     `${username}，你的声音……听起来有点累。今天，要不要先从一句话开始说起？`
   );
 
-    setInterval(updateSilenceInfo, 30000);
+  // 定期更新沉默时间 & 人影
+  setInterval(updateSilenceInfo, 30000);
 }
-
- // ★ 新增：读取上次使用的场景模式
-  const storedMode = localStorage.getItem("qing_mode") || "daily";
-  applyMode(storedMode, false); 
-
 
 // 问候语（早上好 / 下午好 / 晚上好）
 function updateGreeting() {
@@ -109,82 +122,13 @@ function updateSilenceInfo() {
   } else {
     silenceInfo.textContent = "";
   }
-function applyTheme(theme) {
-  currentTheme = theme;
 
-  if (appRoot) {
-    appRoot.classList.remove("theme-deep", "theme-soft", "theme-light");
-    appRoot.classList.add(`theme-${theme}`);
-  }
-  updateSessionInfo();
-  updateSilenceInfo();
-
-  // ★ 新增：读取上次使用的背景主题
-  const storedTheme = localStorage.getItem("qing_theme") || "deep";
-  applyTheme(storedTheme);
-
-  // 晴的第一句
-  addQingMessage(
-    `${username}，你的声音……听起来有点累。今天，要不要先从一句话开始说起？`
-  );
-
-  // 按钮文字提示当前风格
-  if (themeToggleBtn) {
-    if (theme === "deep") {
-      themeToggleBtn.textContent = "深色";
-    } else if (theme === "soft") {
-      themeToggleBtn.textContent = "柔和";
-    } else {
-      themeToggleBtn.textContent = "浅色";
-    }
-  }
-
-  // 记住用户选择
-  localStorage.setItem("qing_theme", theme);
-}
-
-  // 安静超过 2 分钟，人影淡淡出现；你一说话就慢慢退回去
+  // 安静超过 2 分钟，人影出现；你一说话就慢慢退回去
   if (!qingSilhouette) return;
   if (diffMin >= 2) {
     qingSilhouette.classList.add("visible");
   } else {
     qingSilhouette.classList.remove("visible");
-  }
-}
-function applyMode(mode, fromUser = false) {
-  currentMode = mode;
-
-  // 1）外层容器切换类名，改变整体背景氛围
-  if (appRoot) {
-    appRoot.classList.remove("mode-daily", "mode-interview", "mode-lake");
-    appRoot.classList.add(`mode-${mode}`);
-  }
-
-  // 2）按钮高亮
-  if (modeButtons && modeButtons.length) {
-    modeButtons.forEach((btn) => {
-      const btnMode = btn.dataset.mode || "daily";
-      btn.classList.toggle("active", btnMode === mode);
-    });
-  }
-
-  // 3）本地记住选中的模式
-  localStorage.setItem("qing_mode", mode);
-
-  // 4）如果是用户点击切换的，晴给一点回应
-  if (fromUser) {
-    let text = "";
-    if (mode === "daily") {
-      text =
-        "好，那我们就当作是一个普通的日子。你可以随便从今天的一件小事说起。";
-    } else if (mode === "interview") {
-      text =
-        "好，那就当作是你面试那天的版本。如果哪一句回忆让你不舒服，我们随时可以换个话题。";
-    } else if (mode === "lake") {
-      text =
-        "那我们就当作是在湖边那天，只是慢慢聊一会儿，不用把故事讲得很完整。";
-    }
-    addQingMessage(text);
   }
 }
 
@@ -349,31 +293,28 @@ async function sendToQingAI() {
     showTyping();
 
     const res = await fetch("/api/qing", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    username,
-    memories,
-    mode: currentMode, // ★ 把当前场景模式也发给后端
-    messages: chatMessages,
-  }),
-});
-
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        memories,
+        messages: chatMessages,
+      }),
+    });
 
     const data = await res.json();
     hideTyping();
 
-if (!res.ok) {
-  console.error("API error:", data);
-  const msg =
-    (data && (data.error?.message || data.error || JSON.stringify(data))) ||
-    "未知错误";
-  addQingMessage("后端报错：" + msg);
-  return;
-}
-
+    if (!res.ok) {
+      console.error("API error:", data);
+      const msg =
+        (data && (data.error?.message || data.error || JSON.stringify(data))) ||
+        "未知错误";
+      addQingMessage("后端报错：" + msg);
+      return;
+    }
 
     const reply = (data.reply || "").trim() || "嗯，我在。";
     chatMessages.push({ role: "assistant", content: reply });
@@ -395,23 +336,18 @@ if (!res.ok) {
 }
 
 // === 事件绑定 ===
-sendBtn.addEventListener("click", () => {
-  handleUserInput();
-});
-
-input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
+if (sendBtn) {
+  sendBtn.addEventListener("click", () => {
     handleUserInput();
-  }
-});
-// 场景模式按钮点击
-if (modeButtons && modeButtons.length) {
-  modeButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const mode = btn.dataset.mode || "daily";
-      applyMode(mode, true);
-    });
+  });
+}
+
+if (input) {
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleUserInput();
+    }
   });
 }
 
