@@ -17,10 +17,11 @@ const breathingCloseBtn = document.getElementById("breathing-close-btn");
 // 虚化人影
 const qingSilhouette = document.getElementById("qing-silhouette");
 
-// 根节点 & 背景按钮
+// 根节点 & 按钮
 const appRoot = document.querySelector(".app");
 const themeToggleBtn = document.getElementById("theme-toggle");
 const nightToggleBtn = document.getElementById("night-toggle");
+const fontButtons = document.querySelectorAll(".font-btn");
 
 // === 全局状态 ===
 let username = "";
@@ -35,6 +36,7 @@ let breathingPhaseIndex = 0;
 let chatMessages = []; // 会传给后端（百炼）作为对话历史
 let currentTheme = "deep"; // deep / soft / light
 let isNightMode = false;   // 夜间模式开关
+let currentFontSize = "medium"; // small / medium / large
 
 // === 背景主题 ===
 function applyTheme(theme) {
@@ -73,12 +75,28 @@ function applyNightMode(enabled) {
   localStorage.setItem("qing_night", enabled ? "1" : "0");
 }
 
+// === 字体大小模式 ===
+function applyFontSize(size) {
+  currentFontSize = size;
+
+  document.body.classList.remove("font-small", "font-medium", "font-large");
+  document.body.classList.add(`font-${size}`);
+
+  fontButtons.forEach((btn) => {
+    const target = btn.dataset.size || "medium";
+    btn.classList.toggle("font-btn-active", target === size);
+  });
+
+  localStorage.setItem("qing_font_size", size);
+}
+
 // === 初始化 ===
 function initState() {
   const storedName = localStorage.getItem("qing_username");
   const storedMemories = localStorage.getItem("qing_memories");
   const storedTheme = localStorage.getItem("qing_theme");
   const storedNight = localStorage.getItem("qing_night");
+  const storedFont = localStorage.getItem("qing_font_size") || "medium";
 
   if (storedName) {
     username = storedName;
@@ -106,6 +124,9 @@ function initState() {
 
   // 应用上次夜间模式
   applyNightMode(storedNight === "1");
+
+  // 应用上次字体大小
+  applyFontSize(storedFont);
 
   // 晴的第一句
   addQingMessage(
@@ -386,6 +407,16 @@ if (themeToggleBtn) {
 if (nightToggleBtn) {
   nightToggleBtn.addEventListener("click", () => {
     applyNightMode(!isNightMode);
+  });
+}
+
+// 字体大小按钮：小 / 中 / 大
+if (fontButtons && fontButtons.length > 0) {
+  fontButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const size = btn.dataset.size || "medium";
+      applyFontSize(size);
+    });
   });
 }
 

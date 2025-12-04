@@ -11,6 +11,10 @@
   --text-soft: #6b7280;    /* 次要文字 */
   --bubble-qing: #fdf9f2;  /* 晴的气泡：略偏白的便签纸 */
   --bubble-user: #f8f1e7;  /* 用户气泡：稍微深一点的纸 */
+
+  /* 字体缩放系数：通过 body 的类来改 */
+  --chat-font-scale: 1;
+  --system-font-scale: 1;
 }
 
 /* ========= 全局 ========= */
@@ -58,6 +62,20 @@ body::before {
       transparent 3px
     );
   z-index: 0;
+}
+
+/* 字体大小模式 */
+body.font-small {
+  --chat-font-scale: 0.9;
+  --system-font-scale: 0.9;
+}
+body.font-medium {
+  --chat-font-scale: 1;
+  --system-font-scale: 1;
+}
+body.font-large {
+  --chat-font-scale: 1.15;
+  --system-font-scale: 1.05;
 }
 
 /* 夜间模式：整体压暗一点，纹理也变柔和 */
@@ -190,7 +208,7 @@ body.night-mode .app::after {
   color: var(--text-soft);
 }
 
-/* 背景切换按钮：像本子角落的小签条 */
+/* 背景切换按钮 / 夜间按钮：像本子角落的小签条 */
 
 .theme-toggle-btn,
 .night-toggle-btn {
@@ -215,6 +233,37 @@ body.night-mode .app::after {
 .theme-toggle-btn:active,
 .night-toggle-btn:active {
   transform: scale(0.95);
+}
+
+/* 字体大小按钮 */
+
+.font-size-controls {
+  margin-top: 4px;
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.font-btn {
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(209, 178, 138, 0.7);
+  background: rgba(252, 246, 235, 0.7);
+  color: #7c5a30;
+  font-size: 10px;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.font-btn:hover {
+  opacity: 1;
+}
+
+.font-btn-active {
+  background: #fbbf24;
+  border-color: #f59e0b;
+  color: #78350f;
+  opacity: 1;
 }
 
 /* ========= 主体布局 ========= */
@@ -326,7 +375,7 @@ body.night-mode .app::after {
 .message-text {
   padding: 7px 10px;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: calc(13px * var(--chat-font-scale));
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
@@ -349,7 +398,7 @@ body.night-mode .app::after {
 /* 时间小字 */
 
 .message-meta {
-  font-size: 10px;
+  font-size: calc(10px * var(--system-font-scale));
   color: rgba(107, 114, 128, 0.95);
 }
 
@@ -381,7 +430,7 @@ body.night-mode .app::after {
   background: rgba(254, 248, 238, 0.9);
   padding: 8px 10px;
   color: var(--text-main);
-  font-size: 13px;
+  font-size: calc(13px * var(--chat-font-scale));
   line-height: 1.5;
 }
 
@@ -400,7 +449,7 @@ body.night-mode .app::after {
   border: 1px solid rgba(209, 178, 138, 1);
   background: linear-gradient(135deg, #fbbf24, #f59e0b);
   padding: 6px 14px;
-  font-size: 12px;
+  font-size: calc(12px * var(--system-font-scale));
   color: #78350f;
   cursor: pointer;
   transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
@@ -417,7 +466,7 @@ body.night-mode .app::after {
 }
 
 .typing-indicator {
-  font-size: 11px;
+  font-size: calc(11px * var(--system-font-scale));
   color: #9ca3af;
   margin-top: 4px;
   opacity: 0;
@@ -432,7 +481,7 @@ body.night-mode .app::after {
 
 .system-hint {
   margin-top: 2px;
-  font-size: 11px;
+  font-size: calc(11px * var(--system-font-scale));
   color: rgba(120, 113, 108, 0.9);
 }
 
@@ -476,7 +525,7 @@ body.night-mode .app::after {
 
 .memory-section p {
   margin: 0;
-  font-size: 11px;
+  font-size: calc(11px * var(--system-font-scale));
   color: var(--text-soft);
 }
 
@@ -488,7 +537,7 @@ body.night-mode .app::after {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 12px;
+  font-size: calc(12px * var(--chat-font-scale));
   max-height: 260px;
   overflow-y: auto;
 }
@@ -567,13 +616,13 @@ body.night-mode .app::after {
 
 #breathing-phase {
   margin: 0;
-  font-size: 14px;
+  font-size: calc(14px * var(--chat-font-scale));
   color: var(--text-main);
 }
 
 .breathing-sub {
   margin: 6px 0 0;
-  font-size: 12px;
+  font-size: calc(12px * var(--system-font-scale));
   color: var(--text-soft);
 }
 
@@ -582,7 +631,7 @@ body.night-mode .app::after {
   border: none;
   border-radius: 999px;
   padding: 6px 16px;
-  font-size: 12px;
+  font-size: calc(12px * var(--system-font-scale));
   cursor: pointer;
   background: #f9f2e7;
   color: #7c5a30;
@@ -623,7 +672,7 @@ body.night-mode .app::after {
   }
 
   .message-text {
-    font-size: 14px;
+    font-size: calc(14px * var(--chat-font-scale));
   }
 
   .memory-section {
