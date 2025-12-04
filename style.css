@@ -565,41 +565,125 @@ body::before {
 
 /* ========= 响应式 ========= */
 
+/* ====== 小屏布局：平板 & 手机（更像心灵港湾） ====== */
 @media (max-width: 820px) {
   body {
-    padding: 10px;
+    padding: 0;
+    align-items: stretch;
   }
 
   .app {
-    border-radius: 22px;
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    /* 顶部稍微暖一点的光，整体不那么“企业后台” */
+    background:
+      radial-gradient(circle at top, rgba(244, 244, 255, 0.85), transparent 55%),
+      linear-gradient(180deg, #020617 25%, #020617 100%);
   }
 
   .app-main {
-    grid-template-columns: 1fr;
-    padding: 10px 12px 14px;
+    grid-template-columns: 1fr; /* 一列排布：上面聊天，下面记忆 */
+    padding: 12px 14px 18px;
+    gap: 12px;
+  }
+
+  .chat-section {
+    gap: 6px;
   }
 
   .chat-window {
-    height: 360px;
+    height: auto;
+    min-height: 55vh;
+    padding: 12px;
+    border-radius: 18px;
+    background: radial-gradient(
+      circle at top,
+      rgba(15, 23, 42, 0.96),
+      #020617
+    );
+    border-color: rgba(148, 163, 184, 0.3);
+  }
+
+  .message-text {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .system-hint {
+    font-size: 11px;
   }
 
   .memory-section {
-    order: -1;
+    order: 2; /* 聊天在上，记忆在下，更符合“聊完翻翻小本子”的感觉 */
+    padding: 10px 12px 12px;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.94);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+  }
+
+  #memory-list {
+    max-height: 200px;
   }
 }
 
+/* ====== 手机视图：更居中、更像“私人的小终端” ====== */
 @media (max-width: 480px) {
   .app-header {
+    padding: 14px 14px 6px;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(
+      to bottom,
+      rgba(15, 23, 42, 0.92),
+      rgba(15, 23, 42, 0.6)
+    );
+  }
+
+  .header-main {
+    align-items: center;
+  }
+
+  .app-subtitle {
+    font-size: 12px;
   }
 
   .header-meta {
-    align-items: flex-start;
+    align-items: center;
+  }
+
+  .theme-toggle-btn {
+    margin-top: 4px;
   }
 
   .chat-window {
-    height: 360px;
-    padding: 12px;
+    min-height: 50vh;
+    padding: 10px;
+  }
+
+  .chat-input-area {
+    gap: 6px;
+  }
+
+  #user-input {
+    font-size: 13px;
+  }
+
+  #send-btn {
+    padding-inline: 12px;
+  }
+
+  .qing-silhouette {
+    width: 80px;
+    height: 160px;
+    left: 4%;
+  }
+
+  .memory-section {
+    padding-inline: 10px;
   }
 }
