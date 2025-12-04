@@ -1,22 +1,17 @@
 /* ========= 基础配色：牛皮纸 & 铅笔灰 ========= */
 
 :root {
-  /* 整体基调：偏冷、偏灰、暗一些的“夜间纸本” */
-  --bg: #050814;           /* 页面整体背景：深灰蓝 */
-  --bg-soft: #050814;
-  --panel-bg: #111827;     /* 面板 / 小本子背景 */
-  --panel-border: rgba(75, 85, 99, 0.9);
-
-  --accent: #c8aa76;       /* 非常克制的纸色金，不再那么橙黄 */
-  --accent-soft: rgba(200, 170, 118, 0.18);
-
-  --text-main: #e5e7eb;    /* 主文字：偏亮的灰白，适合深色背景 */
-  --text-soft: #9ca3af;    /* 次级文字：冷灰 */
-
-  --bubble-qing: #151923;  /* 晴的气泡：深灰蓝纸 */
-  --bubble-user: #050814;  /* 用户气泡：再深一点，像铅笔记在背页上 */
+  --bg: #f4efe5;           /* 全局背景：浅纸色 */
+  --bg-soft: #f8f3ea;      /* 更亮一层纸色 */
+  --panel-bg: #fdf7ee;     /* 面板背景：书页内侧 */
+  --panel-border: rgba(200, 173, 133, 0.9); /* 牛皮纸边缘那种浅棕 */
+  --accent: #d97757;       /* 温暖一点的砖红 / 焦糖色 */
+  --accent-soft: rgba(217, 119, 87, 0.16);
+  --text-main: #374151;    /* 深灰文字 */
+  --text-soft: #6b7280;    /* 次要文字 */
+  --bubble-qing: #fdf9f2;  /* 晴的气泡：略偏白的便签纸 */
+  --bubble-user: #f8f1e7;  /* 用户气泡：稍微深一点的纸 */
 }
-
 
 /* ========= 全局 ========= */
 
@@ -49,8 +44,8 @@ body::before {
   pointer-events: none;
   position: fixed;
   inset: 0;
-  opacity: 0.18;
-  mix-blend-mode: soft-light;
+  opacity: 0.28;
+  mix-blend-mode: multiply;
   background-image:
     /* 轻微噪点 */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E"),
@@ -73,14 +68,11 @@ body::before {
   width: min(960px, 100%);
   border-radius: 18px;
   border: 1px solid var(--panel-border);
-  background: linear-gradient(
-    180deg,
-    #151923 0%,
-    #111827 45%,
-    #050814 100%
+  background:
+    linear-gradient(180deg, #fcf6ec 0%, #fdf7ee 40%, #faf0e2 100%);
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(15, 23, 42, 0.9);
+    0 18px 50px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(228, 209, 178, 0.9);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -89,17 +81,15 @@ body::before {
 /* 主题：只是纸色略微偏暖 / 偏冷，不搞科幻渐变 */
 
 .app.theme-deep {
-  background: linear-gradient(180deg, #181c27 0%, #111827 50%, #050814 100%);
+  background: linear-gradient(180deg, #fbf2e2 0%, #fdf5ea 40%, #f6e6d1 100%);
 }
 
 .app.theme-soft {
-  background: linear-gradient(180deg, #1b202b 0%, #141923 50%, #050814 100%);
+  background: linear-gradient(180deg, #fdf7ee 0%, #fef9f1 40%, #f7ebda 100%);
 }
 
 .app.theme-light {
-  background: linear-gradient(180deg, #202633 0%, #171b24 55%, #050814 100%);
-}
-
+  background: linear-gradient(180deg, #fefaf3 0%, #fffdf7 40%, #f6ebdc 100%);
 }
 
 /* ========= 头部 ========= */
@@ -351,8 +341,8 @@ body::before {
   max-height: 80px;
   resize: none;
   border-radius: 14px;
-  border: 1px solid rgba(55, 65, 81, 0.9);
-  background: #050814;
+  border: 1px solid rgba(209, 178, 138, 0.9);
+  background: rgba(254, 248, 238, 0.9);
   padding: 8px 10px;
   color: var(--text-main);
   font-size: 13px;
@@ -415,9 +405,9 @@ body::before {
 .memory-section {
   border-radius: 14px;
   padding: 10px 12px 12px;
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+  background: #fbf3e5;
+  border: 1px solid rgba(209, 178, 138, 0.95);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -454,11 +444,10 @@ body::before {
   color: var(--text-soft);
 }
 
-#memory-list li {
-  padding: 6px 8px;
-  border-radius: 8px;
-  background: #050814;
-  border: 1px solid rgba(55, 65, 81, 0.95);
+#memory-list {
+  margin: 4px 0 0;
+  padding: 6px 0 0;
+  border-top: 1px solid rgba(210, 183, 143, 0.85);
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -496,8 +485,8 @@ body::before {
   width: 260px;
   padding: 18px 16px 14px;
   border-radius: 14px;
- background: #050814;
-  border: 1px solid rgba(75, 85, 99, 0.9);
+  background: #fdf7ee;
+  border: 1px solid rgba(209, 178, 138, 1);
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
   display: flex;
   flex-direction: column;
@@ -509,11 +498,11 @@ body::before {
   width: 140px;
   height: 140px;
   border-radius: 999px;
-  border: 1px solid rgba(75, 85, 99, 0.9);
+  border: 1px solid rgba(209, 178, 138, 0.9);
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(148, 163, 184, 0.35),
-    #111827
+    rgba(249, 250, 251, 0.6),
+    #fbf3e5
   );
   animation: breathing-pulse 10s ease-in-out infinite;
 }
