@@ -1,16 +1,16 @@
-/* ========= 色彩基调：克制、暗一点的纸张感 ========= */
+/* ========= 基础配色：牛皮纸 & 铅笔灰 ========= */
 
 :root {
-  --bg: #050816;
-  --bg-soft: #050816;
-  --panel-bg: #111827;
-  --panel-border: rgba(75, 85, 99, 0.9);
-  --accent: #fbbf24; /* 柔一点的金色，而不是荧光蓝 */
-  --accent-soft: rgba(251, 191, 36, 0.18);
-  --text-main: #e5e7eb;
-  --text-soft: #9ca3af;
-  --bubble-qing: #111827;
-  --bubble-user: #111827;
+  --bg: #f4efe5;           /* 全局背景：浅纸色 */
+  --bg-soft: #f8f3ea;      /* 更亮一层纸色 */
+  --panel-bg: #fdf7ee;     /* 面板背景：书页内侧 */
+  --panel-border: rgba(200, 173, 133, 0.9); /* 牛皮纸边缘那种浅棕 */
+  --accent: #d97757;       /* 温暖一点的砖红 / 焦糖色 */
+  --accent-soft: rgba(217, 119, 87, 0.16);
+  --text-main: #374151;    /* 深灰文字 */
+  --text-soft: #6b7280;    /* 次要文字 */
+  --bubble-qing: #fdf9f2;  /* 晴的气泡：略偏白的便签纸 */
+  --bubble-user: #f8f1e7;  /* 用户气泡：稍微深一点的纸 */
 }
 
 /* ========= 全局 ========= */
@@ -30,7 +30,7 @@ body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC",
     "Helvetica Neue", Arial, sans-serif;
-  background: radial-gradient(circle at top, #020617, #020617);
+  background: var(--bg);
   color: var(--text-main);
   display: flex;
   align-items: stretch;
@@ -38,59 +38,73 @@ body {
   padding: 16px;
 }
 
-/* 轻微颗粒感，像纸面纹理，不要太强 */
+/* 纸张纹理：轻微颗粒 + 一点纤维感 */
 body::before {
   content: "";
   pointer-events: none;
   position: fixed;
   inset: 0;
-  opacity: 0.16;
-  mix-blend-mode: soft-light;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.28;
+  mix-blend-mode: multiply;
+  background-image:
+    /* 轻微噪点 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E"),
+    /* 纤维条纹 */
+    repeating-linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.02),
+      rgba(0, 0, 0, 0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    );
   z-index: 0;
 }
 
-/* ========= 外层容器 ========= */
+/* ========= 外层容器：一张纸 ========= */
 
 .app {
   position: relative;
   z-index: 1;
   width: min(960px, 100%);
-  border-radius: 20px;
+  border-radius: 18px;
   border: 1px solid var(--panel-border);
-  background: linear-gradient(180deg, #020617 0%, #020617 55%, #050816 100%);
-  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.9);
+  background:
+    linear-gradient(180deg, #fcf6ec 0%, #fdf7ee 40%, #faf0e2 100%);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(228, 209, 178, 0.9);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-/* 背景主题：只是色温略变化，不搞炫酷渐变 */
+/* 主题：只是纸色略微偏暖 / 偏冷，不搞科幻渐变 */
+
 .app.theme-deep {
-  background: linear-gradient(180deg, #020617 0%, #020617 55%, #050816 100%);
+  background: linear-gradient(180deg, #fbf2e2 0%, #fdf5ea 40%, #f6e6d1 100%);
 }
 
 .app.theme-soft {
-  background: linear-gradient(180deg, #020617 0%, #020617 45%, #111827 100%);
+  background: linear-gradient(180deg, #fdf7ee 0%, #fef9f1 40%, #f7ebda 100%);
 }
 
 .app.theme-light {
-  background: linear-gradient(180deg, #020617 0%, #020617 35%, #1f2937 100%);
+  background: linear-gradient(180deg, #fefaf3 0%, #fffdf7 40%, #f6ebdc 100%);
 }
 
 /* ========= 头部 ========= */
 
 .app-header {
-  padding: 14px 20px 8px;
+  padding: 12px 20px 6px;
   display: flex;
   justify-content: space-between;
   gap: 16px;
   align-items: flex-start;
-  border-bottom: 1px solid rgba(75, 85, 99, 0.7);
+  border-bottom: 1px solid rgba(210, 183, 143, 0.85);
   background: linear-gradient(
     to bottom,
-    rgba(15, 23, 42, 0.96),
-    rgba(15, 23, 42, 0.7)
+    rgba(253, 247, 237, 0.98),
+    rgba(253, 247, 237, 0.8)
   );
 }
 
@@ -105,17 +119,17 @@ body::before {
   align-items: center;
   gap: 8px;
   font-size: 18px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
 }
 
-/* 小太阳点：很克制的小范围呼吸感 */
+/* 小圆点：像写字时台灯下的小光点，稍微呼吸 */
 .app-title::before {
   content: "";
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: radial-gradient(circle at 30% 30%, #f9fafb, var(--accent));
-  box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+  background: radial-gradient(circle at 30% 30%, #fefce8, #fbbf24);
+  box-shadow: 0 0 6px rgba(251, 191, 36, 0.6);
   animation: titleDotPulse 4.8s ease-in-out infinite;
 }
 
@@ -123,11 +137,11 @@ body::before {
   0%,
   100% {
     transform: scale(1);
-    box-shadow: 0 0 6px rgba(251, 191, 36, 0.5);
+    box-shadow: 0 0 4px rgba(251, 191, 36, 0.5);
   }
   50% {
     transform: scale(1.08);
-    box-shadow: 0 0 12px rgba(251, 191, 36, 0.8);
+    box-shadow: 0 0 9px rgba(251, 191, 36, 0.8);
   }
 }
 
@@ -145,14 +159,15 @@ body::before {
   color: var(--text-soft);
 }
 
-/* 背景风格切换按钮：像本子角落的小标记 */
+/* 背景切换按钮：像本子角落的小签条 */
+
 .theme-toggle-btn {
   margin-top: 6px;
   padding: 3px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(75, 85, 99, 0.9);
-  background: rgba(15, 23, 42, 0.96);
-  color: #e5e7eb;
+  border: 1px solid rgba(209, 178, 138, 0.9);
+  background: rgba(252, 246, 235, 0.92);
+  color: #7c5a30;
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -174,7 +189,7 @@ body::before {
   display: grid;
   grid-template-columns: minmax(0, 2.3fr) minmax(0, 1.4fr);
   gap: 16px;
-  padding: 16px 18px 18px;
+  padding: 14px 18px 16px;
   align-items: stretch;
 }
 
@@ -187,22 +202,25 @@ body::before {
   min-width: 0;
 }
 
-/* 聊天“纸张” */
+/* 聊天区域：像笔记本的一页（略偏暖的纸） */
+
 .chat-window {
   position: relative;
   min-height: 360px;
   max-height: 460px;
-  padding: 14px 14px 16px;
-  border-radius: 18px;
-  background: #020617;
-  border: 1px solid rgba(55, 65, 81, 0.85);
+  padding: 14px 12px 14px;
+  border-radius: 14px;
+  background: #f9f2e7;
+  border: 1px solid rgba(209, 178, 138, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* 聊天滚动条：非常淡 */
+/* 聊天滚动条：很淡 */
+
 .chat-window::-webkit-scrollbar {
   width: 5px;
 }
@@ -210,11 +228,12 @@ body::before {
   background: transparent;
 }
 .chat-window::-webkit-scrollbar-thumb {
-  background: rgba(75, 85, 99, 0.8);
+  background: rgba(209, 178, 138, 0.7);
   border-radius: 999px;
 }
 
-/* 虚化人影：更像墨迹，而不是发光人物 */
+/* 虚化人影：像一小片被水晕开的墨迹 */
+
 .qing-silhouette {
   position: absolute;
   left: 6%;
@@ -224,29 +243,29 @@ body::before {
   border-radius: 999px;
   background: radial-gradient(
     circle at 40% 20%,
-    rgba(248, 250, 252, 0.12),
-    rgba(31, 41, 55, 0.6)
+    rgba(148, 119, 88, 0.16),
+    rgba(120, 94, 72, 0.5)
   );
   opacity: 0;
-  filter: blur(12px);
+  filter: blur(10px);
   pointer-events: none;
   transform: translateY(6px);
   transition: opacity 1.2s ease, transform 1.2s ease;
 }
 
 .qing-silhouette.visible {
-  opacity: 0.5;
+  opacity: 0.4;
   transform: translateY(0);
 }
 
-/* 消息气泡 */
+/* 单条消息：像贴在纸上的便签 */
 
 .message {
   max-width: 90%;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  animation: messageIn 0.25s ease-out;
+  animation: messageIn 0.22s ease-out;
 }
 
 @keyframes messageIn {
@@ -270,30 +289,32 @@ body::before {
 
 .message-text {
   padding: 7px 10px;
-  border-radius: 12px;
+  border-radius: 10px;
   font-size: 13px;
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-/* 晴：像摘抄本上的字条 */
+/* 晴：更浅一点的便签纸 */
+
 .message-qing .message-text {
   background: var(--bubble-qing);
-  border: 1px solid rgba(75, 85, 99, 0.95);
+  border: 1px solid rgba(214, 188, 150, 0.95);
 }
 
-/* 用户：稍微深一点 */
+/* 用户：略深一点，像另外一种纸 */
+
 .message-user .message-text {
-  background: #111827;
-  border: 1px solid rgba(107, 114, 128, 0.9);
+  background: var(--bubble-user);
+  border: 1px solid rgba(193, 164, 126, 0.95);
 }
 
 /* 时间小字 */
 
 .message-meta {
   font-size: 10px;
-  color: rgba(156, 163, 175, 0.9);
+  color: rgba(107, 114, 128, 0.95);
 }
 
 .message-qing .message-meta {
@@ -319,9 +340,9 @@ body::before {
   min-height: 38px;
   max-height: 80px;
   resize: none;
-  border-radius: 16px;
-  border: 1px solid rgba(75, 85, 99, 0.9);
-  background: rgba(15, 23, 42, 0.96);
+  border-radius: 14px;
+  border: 1px solid rgba(209, 178, 138, 0.9);
+  background: rgba(254, 248, 238, 0.9);
   padding: 8px 10px;
   color: var(--text-main);
   font-size: 13px;
@@ -334,24 +355,24 @@ body::before {
 
 #user-input:focus {
   outline: none;
-  border-color: rgba(251, 191, 36, 0.8);
-  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.35);
+  border-color: rgba(217, 119, 87, 0.8);
+  box-shadow: 0 0 0 1px rgba(217, 119, 87, 0.35);
 }
 
 #send-btn {
   border-radius: 999px;
-  border: 1px solid rgba(75, 85, 99, 0.95);
-  background: linear-gradient(135deg, #fbbf24, #b45309);
+  border: 1px solid rgba(209, 178, 138, 1);
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
   padding: 6px 14px;
   font-size: 12px;
-  color: #111827;
+  color: #78350f;
   cursor: pointer;
   transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
 }
 
 #send-btn:hover {
   filter: brightness(1.02);
-  box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
 }
 
 #send-btn:active {
@@ -376,17 +397,17 @@ body::before {
 .system-hint {
   margin-top: 2px;
   font-size: 11px;
-  color: rgba(148, 163, 184, 0.9);
+  color: rgba(120, 113, 108, 0.9);
 }
 
-/* ========= 右侧记忆区 ========= */
+/* ========= 右侧记忆区：小本子 ========= */
 
 .memory-section {
-  border-radius: 18px;
-  padding: 12px 14px 14px;
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
+  border-radius: 14px;
+  padding: 10px 12px 12px;
+  background: #fbf3e5;
+  border: 1px solid rgba(209, 178, 138, 0.95);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -400,7 +421,7 @@ body::before {
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(249, 250, 251, 0.96);
+  color: #7c5a30;
   display: flex;
   align-items: center;
 }
@@ -412,7 +433,7 @@ body::before {
   height: 1px;
   background: linear-gradient(
     90deg,
-    rgba(148, 163, 184, 0.9),
+    rgba(210, 183, 143, 0.9),
     transparent
   );
 }
@@ -426,21 +447,21 @@ body::before {
 #memory-list {
   margin: 4px 0 0;
   padding: 6px 0 0;
-  border-top: 1px solid rgba(55, 65, 81, 0.9);
+  border-top: 1px solid rgba(210, 183, 143, 0.85);
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-size: 12px;
-  max-height: 280px;
+  max-height: 260px;
   overflow-y: auto;
 }
 
 #memory-list li {
   padding: 6px 8px;
-  border-radius: 9px;
-  background: rgba(15, 23, 42, 0.96);
-  border: 1px solid rgba(55, 65, 81, 0.95);
+  border-radius: 8px;
+  background: rgba(253, 247, 236, 0.98);
+  border: 1px solid rgba(221, 196, 158, 0.95);
 }
 
 /* ========= 呼吸练习遮罩层 ========= */
@@ -451,8 +472,8 @@ body::before {
   display: none;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at top, #020617, #020617);
-  backdrop-filter: blur(6px);
+  background: rgba(15, 23, 42, 0.15);
+  backdrop-filter: blur(4px);
   z-index: 50;
 }
 
@@ -462,45 +483,45 @@ body::before {
 
 .breathing-panel {
   width: 260px;
-  padding: 20px 18px 16px;
-  border-radius: 18px;
-  background: #020617;
-  border: 1px solid rgba(75, 85, 99, 0.9);
-  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.85);
+  padding: 18px 16px 14px;
+  border-radius: 14px;
+  background: #fdf7ee;
+  border: 1px solid rgba(209, 178, 138, 1);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .breathing-circle {
-  width: 150px;
-  height: 150px;
+  width: 140px;
+  height: 140px;
   border-radius: 999px;
-  border: 1px solid rgba(75, 85, 99, 0.9);
+  border: 1px solid rgba(209, 178, 138, 0.9);
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(243, 244, 246, 0.12),
-    #020617
+    rgba(249, 250, 251, 0.6),
+    #fbf3e5
   );
   animation: breathing-pulse 10s ease-in-out infinite;
 }
 
 @keyframes breathing-pulse {
   0% {
-    transform: scale(0.85);
-    opacity: 0.8;
+    transform: scale(0.86);
+    opacity: 0.9;
   }
   25% {
     transform: scale(1);
     opacity: 1;
   }
   60% {
-    transform: scale(0.9);
+    transform: scale(0.92);
   }
   100% {
-    transform: scale(0.85);
-    opacity: 0.8;
+    transform: scale(0.86);
+    opacity: 0.9;
   }
 }
 
@@ -511,13 +532,13 @@ body::before {
 #breathing-phase {
   margin: 0;
   font-size: 14px;
-  color: #e5e7eb;
+  color: var(--text-main);
 }
 
 .breathing-sub {
   margin: 6px 0 0;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--text-soft);
 }
 
 #breathing-close-btn {
@@ -527,9 +548,9 @@ body::before {
   padding: 6px 16px;
   font-size: 12px;
   cursor: pointer;
-  background: #020617;
-  color: #e5e7eb;
-  border: 1px solid rgba(75, 85, 99, 0.9);
+  background: #f9f2e7;
+  color: #7c5a30;
+  border: 1px solid rgba(209, 178, 138, 0.9);
 }
 
 #breathing-close-btn:active {
@@ -550,12 +571,12 @@ body::before {
     border-radius: 0;
     border: none;
     box-shadow: none;
-    background: linear-gradient(180deg, #020617 0%, #020617 100%);
+    background: radial-gradient(circle at top, #fcf5ea, #f4efe5);
   }
 
   .app-main {
     grid-template-columns: 1fr;
-    padding: 12px 12px 16px;
+    padding: 10px 12px 16px;
     gap: 12px;
   }
 
@@ -571,9 +592,8 @@ body::before {
 
   .memory-section {
     order: 2;
-    padding: 10px 12px 12px;
-    border-radius: 16px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.75);
+    padding: 8px 10px 10px;
+    border-radius: 12px;
   }
 
   #memory-list {
@@ -583,9 +603,9 @@ body::before {
 
 @media (max-width: 480px) {
   .app-header {
-    padding: 12px 14px 6px;
+    padding: 10px 14px 6px;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     align-items: center;
     text-align: center;
   }
