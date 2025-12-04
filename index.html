@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-<title>晴 · 永远倾听 · v3</title>
+<title>晴 · 永远倾听 · v4</title>
   <!-- 这一行是重点：让手机按屏幕宽度来排版 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
@@ -26,15 +26,20 @@
 
     <main class="app-main">
       <!-- 左：聊天区 -->
-      <section class="chat-section">
+<section class="chat-section">
   <div class="chat-window" id="chat-window">
+    <!-- 虚化人影 -->
+    <div class="qing-silhouette" id="qing-silhouette"></div>
+
     <!-- 消息会通过 JS 动态加进来 -->
   </div>
 
-  <!-- 新增：晴正在思考的提示 -->
   <div class="typing-indicator" id="typing-indicator">
     晴 正在回应……
   </div>
+  ...
+</section>
+
 
   <div class="chat-input-area">
     <textarea id="user-input" rows="2" placeholder="说点什么……"></textarea>

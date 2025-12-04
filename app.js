@@ -8,7 +8,8 @@ const silenceInfo = document.getElementById("silence-info");
 const greetingSpan = document.getElementById("greeting");
 const usernameDisplay = document.getElementById("username-display");
 const typingIndicator = document.getElementById("typing-indicator");
-
+// 虚化人影元素
+const qingSilhouette = document.getElementById("qing-silhouette");
 // 呼吸练习相关元素
 const breathingOverlay = document.getElementById("breathing-overlay");
 const breathingPhaseText = document.getElementById("breathing-phase");
@@ -73,7 +74,7 @@ function addQingMessage(text) {
 
 
   // 定时检查“沉默时间”
-  setInterval(updateSilenceInfo, 30000); // 30 秒更新一次
+  setInterval(updateSilenceInfo, 10000); // 30 秒更新一次
 }
 
 function updateGreeting() {
@@ -94,6 +95,7 @@ function updateSessionInfo() {
 
 function updateSilenceInfo() {
   const diffMin = Math.floor((Date.now() - lastUserTime) / 60000);
+
   if (diffMin >= 3) {
     silenceInfo.textContent = `刚刚你安静了大约 ${diffMin} 分钟。沉默也没关系，想说的时候再说就好。`;
   } else if (diffMin >= 1) {
@@ -101,7 +103,18 @@ function updateSilenceInfo() {
   } else {
     silenceInfo.textContent = "";
   }
+
+  // 根据安静时间控制“虚化人影”
+  if (!qingSilhouette) return;
+
+  // 超过 2 分钟基本不说话，人影慢慢显形
+  if (diffMin >= 2) {
+    qingSilhouette.classList.add("visible");
+  } else {
+    qingSilhouette.classList.remove("visible");
+  }
 }
+
 
 // === 渲染消息 ===
 function addMessage(text, from = "qing") {
