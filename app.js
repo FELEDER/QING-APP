@@ -276,11 +276,15 @@ async function sendToQingAI() {
     const data = await res.json();
     hideTyping();
 
-    if (!res.ok) {
-      console.error("API error:", data);
-      addQingMessage("刚刚好像有点小故障，我可能暂时听不清了。我们等一会儿再试试，好吗？");
-      return;
-    }
+if (!res.ok) {
+  console.error("API error:", data);
+  const msg =
+    (data && (data.error?.message || data.error || JSON.stringify(data))) ||
+    "未知错误";
+  addQingMessage("后端报错：" + msg);
+  return;
+}
+
 
     const reply = (data.reply || "").trim() || "嗯，我在。";
     chatMessages.push({ role: "assistant", content: reply });
