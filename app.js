@@ -9,6 +9,10 @@ const greetingSpan = document.getElementById("greeting");
 const usernameDisplay = document.getElementById("username-display");
 const typingIndicator = document.getElementById("typing-indicator");
 
+// 根节点 & 背景按钮
+const appRoot = document.querySelector(".app");
+const themeToggleBtn = document.getElementById("theme-toggle");
+
 // 新增：场景模式相关元素
 const appRoot = document.querySelector(".app");
 const modeButtons = document.querySelectorAll(".mode-btn");
@@ -34,6 +38,7 @@ let breathingPhaseIndex = 0;
 
 let chatMessages = []; // 会传给后端（百炼）作为对话历史
 let currentMode = "daily"; // 当前场景模式
+let currentTheme = "deep"; // 当前背景主题：deep / soft / light
 
 
 // === 初始化 ===
@@ -62,17 +67,19 @@ function initState() {
   updateSessionInfo();
   updateSilenceInfo();
 
-  // ★ 新增：读取上次使用的场景模式
-  const storedMode = localStorage.getItem("qing_mode") || "daily";
-  applyMode(storedMode, false);
+
 
   // 晴的第一句
   addQingMessage(
     `${username}，你的声音……听起来有点累。今天，要不要先从一句话开始说起？`
   );
 
-  setInterval(updateSilenceInfo, 30000);
+    setInterval(updateSilenceInfo, 30000);
 }
+
+ // ★ 新增：读取上次使用的场景模式
+  const storedMode = localStorage.getItem("qing_mode") || "daily";
+  applyMode(storedMode, false); 
 
 
 // 问候语（早上好 / 下午好 / 晚上好）
@@ -102,6 +109,39 @@ function updateSilenceInfo() {
   } else {
     silenceInfo.textContent = "";
   }
+function applyTheme(theme) {
+  currentTheme = theme;
+
+  if (appRoot) {
+    appRoot.classList.remove("theme-deep", "theme-soft", "theme-light");
+    appRoot.classList.add(`theme-${theme}`);
+  }
+  updateSessionInfo();
+  updateSilenceInfo();
+
+  // ★ 新增：读取上次使用的背景主题
+  const storedTheme = localStorage.getItem("qing_theme") || "deep";
+  applyTheme(storedTheme);
+
+  // 晴的第一句
+  addQingMessage(
+    `${username}，你的声音……听起来有点累。今天，要不要先从一句话开始说起？`
+  );
+
+  // 按钮文字提示当前风格
+  if (themeToggleBtn) {
+    if (theme === "deep") {
+      themeToggleBtn.textContent = "深色";
+    } else if (theme === "soft") {
+      themeToggleBtn.textContent = "柔和";
+    } else {
+      themeToggleBtn.textContent = "浅色";
+    }
+  }
+
+  // 记住用户选择
+  localStorage.setItem("qing_theme", theme);
+}
 
   // 安静超过 2 分钟，人影淡淡出现；你一说话就慢慢退回去
   if (!qingSilhouette) return;
@@ -372,6 +412,16 @@ if (modeButtons && modeButtons.length) {
       const mode = btn.dataset.mode || "daily";
       applyMode(mode, true);
     });
+  });
+}
+
+// 背景风格切换按钮：在 深色 / 柔和 / 浅色 之间轮换
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener("click", () => {
+    const order = ["deep", "soft", "light"];
+    const currentIndex = order.indexOf(currentTheme);
+    const nextTheme = order[(currentIndex + 1) % order.length];
+    applyTheme(nextTheme);
   });
 }
 

@@ -90,6 +90,30 @@ body::before {
     radial-gradient(circle at bottom, rgba(15, 23, 42, 0.95), transparent 70%),
     #020617;
 }
+/* === 背景主题：深色 / 柔和 / 浅色 === */
+/* 默认深色（接近现在的样子） */
+.app.theme-deep {
+  background:
+    radial-gradient(circle at top left, rgba(30, 64, 175, 0.6), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(15, 118, 110, 0.5), transparent 50%),
+    #020617;
+}
+
+/* 柔和一点：稍微多一点紫 / 粉，没那么压抑 */
+.app.theme-soft {
+  background:
+    radial-gradient(circle at top left, rgba(129, 140, 248, 0.55), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(45, 212, 191, 0.45), transparent 55%),
+    #020617;
+}
+
+/* 浅色一点：整体亮一些，但主体区域还是偏深，避免太刺眼 */
+.app.theme-light {
+  background:
+    radial-gradient(circle at top, rgba(226, 232, 240, 0.9), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(96, 165, 250, 0.75), transparent 55%),
+    #0f172a;
+}
 
 /* ========= 头部 ========= */
 
@@ -145,6 +169,30 @@ body::before {
   gap: 2px;
   font-size: 11px;
   color: var(--text-soft);
+}
+/* 背景风格切换按钮 */
+.theme-toggle-btn {
+  margin-top: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.theme-toggle-btn:hover {
+  opacity: 1;
+  box-shadow: 0 0 12px rgba(148, 163, 184, 0.7);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.96);
+  box-shadow: none;
 }
 
 /* ========= 主体布局 ========= */
