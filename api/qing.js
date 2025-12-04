@@ -8,11 +8,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const apiKey = process.env.DASHSCOPE_API_KEY;
-    if (!apiKey) {
-      res.status(500).json({ error: "Missing DASHSCOPE_API_KEY" });
-      return;
-    }
+const apiKey = process.env.DASHSCOPE_API_KEY;
+if (!apiKey) {
+  res.status(500).json({ error: "Missing DASHSCOPE_API_KEY" });
+  return;
+}
+
 
     const { username, memories, messages } = req.body || {};
 
