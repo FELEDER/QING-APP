@@ -1,4 +1,4 @@
-// === 基本状态 ===
+// === 获取 DOM 元素 ===
 const chatWindow = document.getElementById("chat-window");
 const input = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
@@ -8,25 +8,28 @@ const silenceInfo = document.getElementById("silence-info");
 const greetingSpan = document.getElementById("greeting");
 const usernameDisplay = document.getElementById("username-display");
 const typingIndicator = document.getElementById("typing-indicator");
-// 虚化人影元素
-const qingSilhouette = document.getElementById("qing-silhouette");
-// 呼吸练习相关元素
+
+// 呼吸练习相关
 const breathingOverlay = document.getElementById("breathing-overlay");
 const breathingPhaseText = document.getElementById("breathing-phase");
 const breathingCloseBtn = document.getElementById("breathing-close-btn");
 
+// 虚化人影
+const qingSilhouette = document.getElementById("qing-silhouette");
+
+// === 全局状态 ===
 let username = "";
 let startTime = Date.now();
 let lastUserTime = Date.now();
 let memories = [];
-let hasNightReminded = false; // 深夜只提醒一次
+let hasNightReminded = false;
 
-// 呼吸引导的状态
 let breathingTimerId = null;
 let breathingPhaseIndex = 0;
 
+let chatMessages = []; // 会传给后端（百炼）作为对话历史
 
-// === 初始化：从 localStorage 读名字 & 记忆 ===
+// === 初始化 ===
 function initState() {
   const storedName = localStorage.getItem("qing_username");
   const storedMemories = localStorage.getItem("qing_memories");
@@ -39,44 +42,29 @@ function initState() {
   }
 
   if (storedMemories) {
-    memories = JSON.parse(storedMemories);
+    try {
+      memories = JSON.parse(storedMemories) || [];
+    } catch (e) {
+      memories = [];
+    }
   }
 
   usernameDisplay.textContent = username;
   updateGreeting();
   renderMemories();
   updateSessionInfo();
+  updateSilenceInfo();
 
-  // 晴的第一句话
-function showTyping() {
-  if (!typingIndicator) return;
-  typingIndicator.classList.add("visible");
+  // 晴的第一句
+  addQingMessage(
+    `${username}，你的声音……听起来有点累。今天，要不要先从一句话开始说起？`
+  );
+
+  // 每 30 秒刷新一次“沉默时间”和人影
+  setInterval(updateSilenceInfo, 30000);
 }
 
-function hideTyping() {
-  if (!typingIndicator) return;
-  typingIndicator.classList.remove("visible");
-}
-
-function addQingMessage(text) {
-  // 根据字数决定延迟时间，更接近“人在思考”
-  const baseDelay = 300;
-  const extraDelay = Math.min(1200, text.length * 25);
-  const totalDelay = baseDelay + extraDelay * Math.random();
-
-  showTyping();
-  setTimeout(() => {
-    hideTyping();
-    addMessage(text, "qing");
-    updateSessionInfo();
-  }, totalDelay);
-}
-
-
-  // 定时检查“沉默时间”
-  setInterval(updateSilenceInfo, 10000); // 30 秒更新一次
-}
-
+// 问候语（早上好 / 下午好 / 晚上好）
 function updateGreeting() {
   const hour = new Date().getHours();
   if (hour >= 5 && hour < 12) greetingSpan.textContent = "早上好";
@@ -104,10 +92,8 @@ function updateSilenceInfo() {
     silenceInfo.textContent = "";
   }
 
-  // 根据安静时间控制“虚化人影”
+  // 安静超过 2 分钟，人影淡淡出现；你一说话就慢慢退回去
   if (!qingSilhouette) return;
-
-  // 超过 2 分钟基本不说话，人影慢慢显形
   if (diffMin >= 2) {
     qingSilhouette.classList.add("visible");
   } else {
@@ -115,8 +101,7 @@ function updateSilenceInfo() {
   }
 }
 
-
-// === 渲染消息 ===
+// === 消息渲染 ===
 function addMessage(text, from = "qing") {
   const div = document.createElement("div");
   div.classList.add("message");
@@ -139,16 +124,52 @@ function addMessage(text, from = "qing") {
 
 function addUserMessage(text) {
   addMessage(text, "user");
-  lastUserTime = Date.now();
-  updateSilenceInfo();
 }
 
+function showTyping() {
+  if (!typingIndicator) return;
+  typingIndicator.classList.add("visible");
+}
+
+function hideTyping() {
+  if (!typingIndicator) return;
+  typingIndicator.classList.remove("visible");
+}
+
+// 晴的气泡：带一点点“思考延迟”
 function addQingMessage(text) {
+  const baseDelay = 300;
+  const extraDelay = Math.min(1200, text.length * 25);
+  const totalDelay = baseDelay + extraDelay * Math.random();
+
   setTimeout(() => {
     addMessage(text, "qing");
     updateSessionInfo();
-  }, 400 + Math.random() * 500); // 模拟“思考”延迟
+  }, totalDelay);
 }
+
+// === 记忆系统 ===
+function renderMemories() {
+  memoryList.innerHTML = "";
+  if (memories.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "还没有特别想记的东西。你可以对我说：帮我记 + 某句话。";
+    memoryList.appendChild(li);
+    return;
+  }
+  memories.forEach((m) => {
+    const li = document.createElement("li");
+    li.textContent = m;
+    memoryList.appendChild(li);
+  });
+}
+
+function addMemory(text) {
+  memories.push(text);
+  localStorage.setItem("qing_memories", JSON.stringify(memories));
+  renderMemories();
+}
+
 // === 呼吸练习逻辑 ===
 const breathingSequence = [
   { text: "吸气…… 在心里慢慢数到四。", duration: 4000 },
@@ -190,7 +211,6 @@ function hideBreathingOverlay() {
   stopBreathingGuide();
 }
 
-// 关闭按钮
 if (breathingCloseBtn) {
   breathingCloseBtn.addEventListener("click", () => {
     hideBreathingOverlay();
@@ -198,37 +218,17 @@ if (breathingCloseBtn) {
   });
 }
 
-// === 记忆系统 ===
-function renderMemories() {
-  memoryList.innerHTML = "";
-  if (memories.length === 0) {
-    const li = document.createElement("li");
-    li.textContent = "还没有特别想记的东西。你可以对我说：帮我记 + 某句话。";
-    memoryList.appendChild(li);
-    return;
-  }
-  memories.forEach((m) => {
-    const li = document.createElement("li");
-    li.textContent = m;
-    memoryList.appendChild(li);
-  });
-}
-
-function addMemory(text) {
-  memories.push(text);
-  localStorage.setItem("qing_memories", JSON.stringify(memories));
-  renderMemories();
-}
-
-// === 对话逻辑（简化版“情感助手晴”） ===
-function handleUserInput() {
+// === 核心：处理用户输入 & 调用后端（阿里云百炼） ===
+async function handleUserInput() {
   const text = input.value.trim();
   if (!text) return;
   input.value = "";
 
   addUserMessage(text);
+  lastUserTime = Date.now();
+  updateSilenceInfo();
 
-  // 1）检查是否是“帮我记”
+  // 1）“帮我记”在前端本地处理，不走模型
   if (text.startsWith("帮我记")) {
     const toRemember = text.replace("帮我记", "").trim();
     if (toRemember) {
@@ -240,70 +240,72 @@ function handleUserInput() {
     return;
   }
 
-  // 2）简单情绪关键词
-  if (text.includes("好累") || text.includes("很累")) {
-    addQingMessage("听起来今天确实不太轻松。我们可以先做两三轮很简单的呼吸练习，让身体慢一点。");
+  // 2）情绪词：顺便打开呼吸练习
+  if (
+    text.includes("好累") ||
+    text.includes("很累") ||
+    text.includes("焦虑") ||
+    text.includes("紧张")
+  ) {
     showBreathingOverlay();
-    return;
   }
 
-  if (text.includes("焦虑") || text.includes("紧张")) {
-    addQingMessage("我看到你打字停了很久。焦虑的时候，先照顾好身体这台“硬件”也很重要。");
-    addQingMessage("如果你愿意，我们先一起呼吸几轮，等心跳慢一点，再慢慢说那些让你不安的部分。");
-    showBreathingOverlay();
-    return;
-  }
+  // 3）把这句用户的话记录进对话历史
+  chatMessages.push({ role: "user", content: text });
 
+  // 4）发给后端，让“晴”（通义千问）来回答
+  await sendToQingAI();
+}
 
-  if (text.includes("失业") || text.includes("工作") || text.includes("简历")) {
-    addQingMessage("这些字看久了，确实会让人头疼。");
-    addQingMessage("你已经在努力往前走了，不是“什么都没做”。我们可以一块儿把下一步拆小一点，好不好？");
-    return;
-  }
+async function sendToQingAI() {
+  try {
+    showTyping();
 
-  if (text.includes("诗") || text.includes("写") || text.includes("句子")) {
-    addQingMessage("你写下来的那些东西，不算“乱七八糟”。至少在我这儿，它们一直是有分量的。");
-    addQingMessage("哪天你愿意，可以挑一句自己还喜欢的，读给我听。");
-    return;
-  }
+    const res = await fetch("/api/qing", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        memories,
+        messages: chatMessages,
+      }),
+    });
 
-  // 3）通用回复：像晴那样“顺着你说的东西走”
-  const len = text.length;
+    const data = await res.json();
+    hideTyping();
 
-  let reply = "";
+    if (!res.ok) {
+      console.error("API error:", data);
+      addQingMessage("刚刚好像有点小故障，我可能暂时听不清了。我们等一会儿再试试，好吗？");
+      return;
+    }
 
-  if (len <= 6) {
-    reply = "嗯，我看到了。你愿意多说一点吗？不用一次说完。";
-  } else if (len <= 20) {
-    reply =
-      "我读了一遍你刚刚打的那句，感觉你其实已经把最重要的那部分说出口了。还想继续展开的话，我在。";
-  } else {
-    reply =
-      "你写得这么细，我能感受到你其实想把事情讲清楚。就算现在还没有答案，这些话本身，也是往前走的一小步。";
-  }
+    const reply = (data.reply || "").trim() || "嗯，我在。";
+    chatMessages.push({ role: "assistant", content: reply });
+    addQingMessage(reply);
 
-  // 偶尔提到之前帮你记过的话，让对话有一点“历史感”
-  if (memories.length > 0 && Math.random() < 0.35) {
-    const lastMemory = memories[memories.length - 1];
-    reply += ` 顺便说一句，我还记得你之前让我帮你记的那句：“${lastMemory}”。那会儿的你，好像也挺认真地在感受生活。`;
-  }
-
-  addQingMessage(reply);
-
-
-  // 深夜小提醒：只在凌晨时段且本次会话中提醒一次
-  const hour = new Date().getHours();
-  if (!hasNightReminded && (hour >= 0 && hour < 5)) {
-    hasNightReminded = true;
-    addQingMessage(
-      "现在已经挺晚了了。如果明天还有事情，不一定要把所有话都在今晚说完。你可以先睡一会儿，剩下的，我们明天再慢慢聊。"
-    );
+    // 深夜小提醒：在模型回复之后轻轻说一次
+    const hour = new Date().getHours();
+    if (!hasNightReminded && hour >= 0 && hour < 5) {
+      hasNightReminded = true;
+      addQingMessage(
+        "现在已经挺晚了。如果明天还有事情，不一定要把所有话都在今晚说完。你可以先睡一会儿，剩下的，我们明天再慢慢聊。"
+      );
+    }
+  } catch (err) {
+    console.error("Network error:", err);
+    hideTyping();
+    addQingMessage("网络好像有点不太稳定，我先在这里等你一会儿。");
   }
 }
 
+// === 事件绑定 ===
+sendBtn.addEventListener("click", () => {
+  handleUserInput();
+});
 
-// 发送按钮 & 回车事件
-sendBtn.addEventListener("click", handleUserInput);
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
@@ -311,5 +313,4 @@ input.addEventListener("keydown", (e) => {
   }
 });
 
-// 页面加载完成后初始化
 window.addEventListener("DOMContentLoaded", initState);
