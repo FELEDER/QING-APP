@@ -60,6 +60,16 @@ body::before {
   z-index: 0;
 }
 
+/* 夜间模式：整体压暗一点，纹理也变柔和 */
+body.night-mode {
+  background: #111827;
+}
+
+body.night-mode::before {
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+}
+
 /* ========= 外层容器：一张纸 ========= */
 
 .app {
@@ -76,6 +86,25 @@ body::before {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* 夜间滤镜：在 app 上加一层暗色幕布，整体变暗不刺眼 */
+.app::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+      circle at top,
+      rgba(15, 23, 42, 0.25),
+      rgba(15, 23, 42, 0.45)
+    );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+body.night-mode .app::after {
+  opacity: 1;
 }
 
 /* 主题：只是纸色略微偏暖 / 偏冷，不搞科幻渐变 */
@@ -106,6 +135,8 @@ body::before {
     rgba(253, 247, 237, 0.98),
     rgba(253, 247, 237, 0.8)
   );
+  position: relative;
+  z-index: 1;
 }
 
 .header-main {
@@ -161,8 +192,9 @@ body::before {
 
 /* 背景切换按钮：像本子角落的小签条 */
 
-.theme-toggle-btn {
-  margin-top: 6px;
+.theme-toggle-btn,
+.night-toggle-btn {
+  margin-top: 4px;
   padding: 3px 10px;
   border-radius: 999px;
   border: 1px solid rgba(209, 178, 138, 0.9);
@@ -175,11 +207,13 @@ body::before {
   opacity: 0.9;
 }
 
-.theme-toggle-btn:hover {
+.theme-toggle-btn:hover,
+.night-toggle-btn:hover {
   opacity: 1;
 }
 
-.theme-toggle-btn:active {
+.theme-toggle-btn:active,
+.night-toggle-btn:active {
   transform: scale(0.95);
 }
 
@@ -191,6 +225,8 @@ body::before {
   gap: 16px;
   padding: 14px 18px 16px;
   align-items: stretch;
+  position: relative;
+  z-index: 1;
 }
 
 /* ========= 聊天区 ========= */

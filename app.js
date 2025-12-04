@@ -20,6 +20,7 @@ const qingSilhouette = document.getElementById("qing-silhouette");
 // 根节点 & 背景按钮
 const appRoot = document.querySelector(".app");
 const themeToggleBtn = document.getElementById("theme-toggle");
+const nightToggleBtn = document.getElementById("night-toggle");
 
 // === 全局状态 ===
 let username = "";
@@ -33,6 +34,7 @@ let breathingPhaseIndex = 0;
 
 let chatMessages = []; // 会传给后端（百炼）作为对话历史
 let currentTheme = "deep"; // deep / soft / light
+let isNightMode = false;   // 夜间模式开关
 
 // === 背景主题 ===
 function applyTheme(theme) {
@@ -56,11 +58,27 @@ function applyTheme(theme) {
   localStorage.setItem("qing_theme", theme);
 }
 
+// === 夜间模式 ===
+function applyNightMode(enabled) {
+  isNightMode = enabled;
+
+  if (enabled) {
+    document.body.classList.add("night-mode");
+    if (nightToggleBtn) nightToggleBtn.textContent = "日间";
+  } else {
+    document.body.classList.remove("night-mode");
+    if (nightToggleBtn) nightToggleBtn.textContent = "夜间";
+  }
+
+  localStorage.setItem("qing_night", enabled ? "1" : "0");
+}
+
 // === 初始化 ===
 function initState() {
   const storedName = localStorage.getItem("qing_username");
   const storedMemories = localStorage.getItem("qing_memories");
   const storedTheme = localStorage.getItem("qing_theme");
+  const storedNight = localStorage.getItem("qing_night");
 
   if (storedName) {
     username = storedName;
@@ -85,6 +103,9 @@ function initState() {
 
   // 应用上次主题
   applyTheme(storedTheme || "deep");
+
+  // 应用上次夜间模式
+  applyNightMode(storedNight === "1");
 
   // 晴的第一句
   addQingMessage(
@@ -358,6 +379,13 @@ if (themeToggleBtn) {
     const currentIndex = order.indexOf(currentTheme);
     const nextTheme = order[(currentIndex + 1) % order.length];
     applyTheme(nextTheme);
+  });
+}
+
+// 夜间模式按钮：在 夜间 / 日间 之间切换
+if (nightToggleBtn) {
+  nightToggleBtn.addEventListener("click", () => {
+    applyNightMode(!isNightMode);
   });
 }
 
