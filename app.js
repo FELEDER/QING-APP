@@ -9,11 +9,21 @@ const greetingSpan = document.getElementById("greeting");
 const usernameDisplay = document.getElementById("username-display");
 const typingIndicator = document.getElementById("typing-indicator");
 
+// 呼吸练习相关元素
+const breathingOverlay = document.getElementById("breathing-overlay");
+const breathingPhaseText = document.getElementById("breathing-phase");
+const breathingCloseBtn = document.getElementById("breathing-close-btn");
+
 let username = "";
 let startTime = Date.now();
 let lastUserTime = Date.now();
 let memories = [];
-let hasNightReminded = false; // 当晚只提醒一次“太晚了”
+let hasNightReminded = false; // 深夜只提醒一次
+
+// 呼吸引导的状态
+let breathingTimerId = null;
+let breathingPhaseIndex = 0;
+
 
 // === 初始化：从 localStorage 读名字 & 记忆 ===
 function initState() {
@@ -126,6 +136,54 @@ function addQingMessage(text) {
     updateSessionInfo();
   }, 400 + Math.random() * 500); // 模拟“思考”延迟
 }
+// === 呼吸练习逻辑 ===
+const breathingSequence = [
+  { text: "吸气…… 在心里慢慢数到四。", duration: 4000 },
+  { text: "停一下…… 感受一下胸腔鼓起来。", duration: 3000 },
+  { text: "呼气…… 慢慢吐掉，数到六。", duration: 5000 },
+  { text: "什么都不用做，就待在这里就好。", duration: 4000 },
+];
+
+function scheduleNextBreathingPhase() {
+  if (!breathingOverlay || !breathingPhaseText) return;
+  const phase = breathingSequence[breathingPhaseIndex];
+  breathingPhaseText.textContent = phase.text;
+  breathingPhaseIndex = (breathingPhaseIndex + 1) % breathingSequence.length;
+
+  breathingTimerId = setTimeout(scheduleNextBreathingPhase, phase.duration);
+}
+
+function startBreathingGuide() {
+  breathingPhaseIndex = 0;
+  scheduleNextBreathingPhase();
+}
+
+function stopBreathingGuide() {
+  if (breathingTimerId) {
+    clearTimeout(breathingTimerId);
+    breathingTimerId = null;
+  }
+}
+
+function showBreathingOverlay() {
+  if (!breathingOverlay) return;
+  breathingOverlay.classList.add("visible");
+  startBreathingGuide();
+}
+
+function hideBreathingOverlay() {
+  if (!breathingOverlay) return;
+  breathingOverlay.classList.remove("visible");
+  stopBreathingGuide();
+}
+
+// 关闭按钮
+if (breathingCloseBtn) {
+  breathingCloseBtn.addEventListener("click", () => {
+    hideBreathingOverlay();
+    addQingMessage("好，我们先到这里。以后你想练的时候，跟我说一声就行。");
+  });
+}
 
 // === 记忆系统 ===
 function renderMemories() {
@@ -171,16 +229,18 @@ function handleUserInput() {
 
   // 2）简单情绪关键词
   if (text.includes("好累") || text.includes("很累")) {
-    addQingMessage("听起来今天确实不太轻松。要不要试试一起慢慢呼吸？");
-    addQingMessage("吸气，数到四……停一拍……再慢慢吐掉。我们来两三次就好。");
+    addQingMessage("听起来今天确实不太轻松。我们可以先做两三轮很简单的呼吸练习，让身体慢一点。");
+    showBreathingOverlay();
     return;
   }
 
   if (text.includes("焦虑") || text.includes("紧张")) {
-    addQingMessage("我看到你打字停了很久。紧张也没什么丢脸的。");
-    addQingMessage("如果你愿意，可以跟我说说，最让你不安的是哪一块？不需要很完整的一段，只要几个词也可以。");
+    addQingMessage("我看到你打字停了很久。焦虑的时候，先照顾好身体这台“硬件”也很重要。");
+    addQingMessage("如果你愿意，我们先一起呼吸几轮，等心跳慢一点，再慢慢说那些让你不安的部分。");
+    showBreathingOverlay();
     return;
   }
+
 
   if (text.includes("失业") || text.includes("工作") || text.includes("简历")) {
     addQingMessage("这些字看久了，确实会让人头疼。");

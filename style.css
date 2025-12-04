@@ -256,3 +256,99 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+/* 呼吸练习遮罩层 */
+.breathing-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.98));
+  backdrop-filter: blur(10px);
+  z-index: 50;
+}
+
+.breathing-overlay.visible {
+  display: flex;
+}
+
+.breathing-panel {
+  width: 260px;
+  padding: 24px 20px 18px;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.breathing-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+  background: radial-gradient(circle at 30% 30%, rgba(224, 242, 254, 0.2), rgba(15, 23, 42, 0.9));
+  animation: breathing-pulse 10s ease-in-out infinite;
+}
+
+.breathing-text {
+  text-align: center;
+}
+
+#breathing-phase {
+  margin: 0;
+  font-size: 14px;
+  color: #e5e7eb;
+}
+
+.breathing-sub {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+#breathing-close-btn {
+  margin-top: 4px;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 12px;
+  cursor: pointer;
+  background: rgba(15, 23, 42, 0.9);
+  color: #cbd5f5;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+}
+
+#breathing-close-btn:active {
+  transform: scale(0.97);
+}
+
+/* 呼吸圆的节奏：慢慢变大 → 停一停 → 慢慢变小 → 再停一停 */
+@keyframes breathing-pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  20% {
+    transform: scale(1.02); /* 吸气 */
+    opacity: 1;
+  }
+  35% {
+    transform: scale(1.06); /* 停留 */
+  }
+  65% {
+    transform: scale(0.82); /* 呼气 */
+    opacity: 0.8;
+  }
+  80% {
+    transform: scale(0.78); /* 呼气尾部停留 */
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+}

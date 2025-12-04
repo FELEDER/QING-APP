@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-<title>晴 · 永远倾听 · v2</title>
+<title>晴 · 永远倾听 · v3</title>
   <!-- 这一行是重点：让手机按屏幕宽度来排版 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
@@ -60,6 +60,17 @@
         </div>
       </aside>
     </main>
+  </div>
+  <!-- 呼吸练习遮罩层 -->
+  <div class="breathing-overlay" id="breathing-overlay">
+    <div class="breathing-panel">
+      <div class="breathing-circle"></div>
+      <div class="breathing-text">
+        <p id="breathing-phase">吸气…… 数到四</p>
+        <p class="breathing-sub">跟着圆一起，慢慢来，就两三轮就好。</p>
+      </div>
+      <button id="breathing-close-btn">我想先停一下</button>
+    </div>
   </div>
 
   <script src="app.js"></script>
