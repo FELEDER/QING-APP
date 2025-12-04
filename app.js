@@ -9,6 +9,11 @@ const greetingSpan = document.getElementById("greeting");
 const usernameDisplay = document.getElementById("username-display");
 const typingIndicator = document.getElementById("typing-indicator");
 
+// 新增：场景模式相关元素
+const appRoot = document.querySelector(".app");
+const modeButtons = document.querySelectorAll(".mode-btn");
+
+
 // 呼吸练习相关
 const breathingOverlay = document.getElementById("breathing-overlay");
 const breathingPhaseText = document.getElementById("breathing-phase");
@@ -28,6 +33,8 @@ let breathingTimerId = null;
 let breathingPhaseIndex = 0;
 
 let chatMessages = []; // 会传给后端（百炼）作为对话历史
+let currentMode = "daily"; // 当前场景模式
+
 
 // === 初始化 ===
 function initState() {
@@ -55,14 +62,18 @@ function initState() {
   updateSessionInfo();
   updateSilenceInfo();
 
+  // ★ 新增：读取上次使用的场景模式
+  const storedMode = localStorage.getItem("qing_mode") || "daily";
+  applyMode(storedMode, false);
+
   // 晴的第一句
   addQingMessage(
     `${username}，你的声音……听起来有点累。今天，要不要先从一句话开始说起？`
   );
 
-  // 每 30 秒刷新一次“沉默时间”和人影
   setInterval(updateSilenceInfo, 30000);
 }
+
 
 // 问候语（早上好 / 下午好 / 晚上好）
 function updateGreeting() {
@@ -98,6 +109,42 @@ function updateSilenceInfo() {
     qingSilhouette.classList.add("visible");
   } else {
     qingSilhouette.classList.remove("visible");
+  }
+}
+function applyMode(mode, fromUser = false) {
+  currentMode = mode;
+
+  // 1）外层容器切换类名，改变整体背景氛围
+  if (appRoot) {
+    appRoot.classList.remove("mode-daily", "mode-interview", "mode-lake");
+    appRoot.classList.add(`mode-${mode}`);
+  }
+
+  // 2）按钮高亮
+  if (modeButtons && modeButtons.length) {
+    modeButtons.forEach((btn) => {
+      const btnMode = btn.dataset.mode || "daily";
+      btn.classList.toggle("active", btnMode === mode);
+    });
+  }
+
+  // 3）本地记住选中的模式
+  localStorage.setItem("qing_mode", mode);
+
+  // 4）如果是用户点击切换的，晴给一点回应
+  if (fromUser) {
+    let text = "";
+    if (mode === "daily") {
+      text =
+        "好，那我们就当作是一个普通的日子。你可以随便从今天的一件小事说起。";
+    } else if (mode === "interview") {
+      text =
+        "好，那就当作是你面试那天的版本。如果哪一句回忆让你不舒服，我们随时可以换个话题。";
+    } else if (mode === "lake") {
+      text =
+        "那我们就当作是在湖边那天，只是慢慢聊一会儿，不用把故事讲得很完整。";
+    }
+    addQingMessage(text);
   }
 }
 
@@ -262,16 +309,18 @@ async function sendToQingAI() {
     showTyping();
 
     const res = await fetch("/api/qing", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        memories,
-        messages: chatMessages,
-      }),
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    username,
+    memories,
+    mode: currentMode, // ★ 把当前场景模式也发给后端
+    messages: chatMessages,
+  }),
+});
+
 
     const data = await res.json();
     hideTyping();
@@ -316,5 +365,14 @@ input.addEventListener("keydown", (e) => {
     handleUserInput();
   }
 });
+// 场景模式按钮点击
+if (modeButtons && modeButtons.length) {
+  modeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const mode = btn.dataset.mode || "daily";
+      applyMode(mode, true);
+    });
+  });
+}
 
 window.addEventListener("DOMContentLoaded", initState);

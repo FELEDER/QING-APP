@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-<title>晴 · 永远倾听 · v6</title>
+<title>晴 · 永远倾听 · v7</title>
   <!-- 这一行是重点：让手机按屏幕宽度来排版 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
@@ -10,19 +10,28 @@
 
 <body>
   <div class="app">
-    <header class="app-header">
-      <div class="title">
-        <div class="logo-dot"></div>
-        <div>
-          <h1>晴</h1>
-          <p>永远倾听 · 永远理解 · 永远陪伴</p>
-        </div>
-      </div>
-      <div class="user-info">
-        <span id="greeting">晚上好</span>
-        <span id="username-display"></span>
-      </div>
-    </header>
+<header class="app-header">
+  <div class="header-main">
+    <div class="app-title">晴 · 永远倾听</div>
+    <div class="app-subtitle">
+      <span id="greeting"></span>，<span id="username-display"></span>
+    </div>
+
+    <!-- 新增：场景模式切换 -->
+    <div class="mode-switch">
+      <button class="mode-btn" data-mode="daily">日常</button>
+      <button class="mode-btn" data-mode="interview">面试那天</button>
+      <button class="mode-btn" data-mode="lake">湖边夜晚</button>
+    </div>
+  </div>
+
+  <!-- 你原来的 header-meta 那块保持不动 -->
+  <div class="header-meta">
+    <div id="session-info"></div>
+    <div id="silence-info"></div>
+  </div>
+</header>
+
 
     <main class="app-main">
       <!-- 左：聊天区 -->

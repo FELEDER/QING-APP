@@ -390,3 +390,44 @@ body {
     transform: translateY(2px) scale(0.99);
   }
 }
+/* 场景模式切换按钮 */
+.mode-switch {
+  margin-top: 8px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mode-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: rgba(15, 23, 42, 0.75);
+  padding: 2px 10px;
+  font-size: 11px;
+  color: #e5e7eb;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.mode-btn.active {
+  border-color: rgba(56, 189, 248, 0.9);
+  background: radial-gradient(
+    circle at 30% 0%,
+    rgba(56, 189, 248, 0.35),
+    rgba(15, 23, 42, 0.95)
+  );
+  opacity: 1;
+}
+
+/* 不同场景下整体背景氛围（给 .app 加类） */
+.app.mode-daily {
+  background: radial-gradient(circle at top, #0f172a, #020617);
+}
+
+.app.mode-interview {
+  background: radial-gradient(circle at top, #1e293b, #020617);
+}
+
+.app.mode-lake {
+  background: radial-gradient(circle at top, #020617, #020617);
+}
