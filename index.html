@@ -27,17 +27,24 @@
     <main class="app-main">
       <!-- 左：聊天区 -->
       <section class="chat-section">
-        <div class="chat-window" id="chat-window">
-          <!-- 消息会通过 JS 动态加进来 -->
-        </div>
-        <div class="chat-input-area">
-          <textarea id="user-input" rows="2" placeholder="说点什么……"></textarea>
-          <button id="send-btn">发送</button>
-        </div>
-        <div class="system-hint">
-          小提示：输入 “帮我记 + 内容”，晴会把这句话收藏在右边。
-        </div>
-      </section>
+  <div class="chat-window" id="chat-window">
+    <!-- 消息会通过 JS 动态加进来 -->
+  </div>
+
+  <!-- 新增：晴正在思考的提示 -->
+  <div class="typing-indicator" id="typing-indicator">
+    晴 正在回应……
+  </div>
+
+  <div class="chat-input-area">
+    <textarea id="user-input" rows="2" placeholder="说点什么……"></textarea>
+    <button id="send-btn">发送</button>
+  </div>
+  <div class="system-hint">
+    小提示：输入 “帮我记 + 内容”，晴会把这句话收藏在右边。
+  </div>
+</section>
+
 
       <!-- 右：晴的记忆 / 状态 -->
       <aside class="side-panel">

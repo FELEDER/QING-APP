@@ -242,3 +242,17 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* 晴打字提示 */
+.typing-indicator {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.typing-indicator.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

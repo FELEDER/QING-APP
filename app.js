@@ -7,11 +7,13 @@ const sessionInfo = document.getElementById("session-info");
 const silenceInfo = document.getElementById("silence-info");
 const greetingSpan = document.getElementById("greeting");
 const usernameDisplay = document.getElementById("username-display");
+const typingIndicator = document.getElementById("typing-indicator");
 
 let username = "";
 let startTime = Date.now();
 let lastUserTime = Date.now();
 let memories = [];
+let hasNightReminded = false; // 当晚只提醒一次“太晚了”
 
 // === 初始化：从 localStorage 读名字 & 记忆 ===
 function initState() {
@@ -35,9 +37,30 @@ function initState() {
   updateSessionInfo();
 
   // 晴的第一句话
-  addQingMessage(
-    `${username}，你的声音……听起来有点累。今天，要不要先从一句话开始说起？`
-  );
+function showTyping() {
+  if (!typingIndicator) return;
+  typingIndicator.classList.add("visible");
+}
+
+function hideTyping() {
+  if (!typingIndicator) return;
+  typingIndicator.classList.remove("visible");
+}
+
+function addQingMessage(text) {
+  // 根据字数决定延迟时间，更接近“人在思考”
+  const baseDelay = 300;
+  const extraDelay = Math.min(1200, text.length * 25);
+  const totalDelay = baseDelay + extraDelay * Math.random();
+
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addMessage(text, "qing");
+    updateSessionInfo();
+  }, totalDelay);
+}
+
 
   // 定时检查“沉默时间”
   setInterval(updateSilenceInfo, 30000); // 30 秒更新一次
@@ -186,8 +209,25 @@ function handleUserInput() {
       "你写得这么细，我能感受到你其实想把事情讲清楚。就算现在还没有答案，这些话本身，也是往前走的一小步。";
   }
 
+  // 偶尔提到之前帮你记过的话，让对话有一点“历史感”
+  if (memories.length > 0 && Math.random() < 0.35) {
+    const lastMemory = memories[memories.length - 1];
+    reply += ` 顺便说一句，我还记得你之前让我帮你记的那句：“${lastMemory}”。那会儿的你，好像也挺认真地在感受生活。`;
+  }
+
   addQingMessage(reply);
+
+
+  // 深夜小提醒：只在凌晨时段且本次会话中提醒一次
+  const hour = new Date().getHours();
+  if (!hasNightReminded && (hour >= 0 && hour < 5)) {
+    hasNightReminded = true;
+    addQingMessage(
+      "现在已经挺晚了了。如果明天还有事情，不一定要把所有话都在今晚说完。你可以先睡一会儿，剩下的，我们明天再慢慢聊。"
+    );
+  }
 }
+
 
 // 发送按钮 & 回车事件
 sendBtn.addEventListener("click", handleUserInput);
